@@ -129,3 +129,17 @@ CORS_ORIGIN_WHITELIST = (
     '0.0.0.0:4000',
     'localhost:4000',
 )
+
+# rest_framework 配置
+AUTH_USER_MODEL = 'authentication.User'
+
+REST_FRAMEWORK = {
+    # 返回异常时执行的函数
+    'EXCEPTION_HANDLER': 'Blog.apps.core.exceptions.core_exception_handler',
+    # 用于序列化程序错误的键
+    'NON_FIELD_ERRORS_KEY': 'error',
+    # 用于认证的类
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'Blog.apps.authentication.backends.JWTAuthentication',
+    ),
+}
