@@ -6,8 +6,8 @@ from django.db import models
 from datetime import datetime, timedelta
 from django.conf import settings
 
+from Blog.apps.core.models import TimestampedModel
 
-# Create your models here.
 
 class UserManager(BaseUserManager):
     """
@@ -41,7 +41,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     """用户"""
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.EmailField(db_index=True, unique=True)
@@ -49,10 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     # 管理员
     is_staff = models.BooleanField(default=False)
-    # 创建时间
-    created_at = models.DateTimeField(auto_now_add=True)
-    # 更新时间
-    updated_at = models.DateTimeField(auto_now=True)
+
     # 使用email进行登录
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

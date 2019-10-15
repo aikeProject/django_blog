@@ -7,7 +7,7 @@
 @Software:   PyCharm
 @File    :   renderers.py
 @Time    :   2019-10-14 19:49
-@Desc    :
+@Desc    :   JSON 序列化
 """
 
 import json
