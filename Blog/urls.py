@@ -18,6 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # 用户认证
     path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
 ]
