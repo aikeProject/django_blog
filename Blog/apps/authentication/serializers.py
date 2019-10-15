@@ -74,7 +74,7 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(username=email, password=password)
 
         if user is None:
-            raise serializers.ValidationError('此用户不存在')
+            raise serializers.ValidationError('用户名密码错误')
 
         if not user.is_active:
             raise serializers.ValidationError('此用户不存在')
@@ -90,8 +90,17 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=128,
         min_length=8,
-        write_only=True
+        write_only=True,
+        allow_blank=True,
+        error_messages={
+            'required': '请输入密码'
+        }
     )
+
+    # allow_blank 将空值设置为有效值
+    username = serializers.CharField(allow_blank=True)
+
+    email = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = User
@@ -104,7 +113,7 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
 
         for (key, value) in validated_data.items():
-            setattr(instance, key, value)
+            setattr(instance, key, value) if value else None
 
         if password is not None:
             instance.set_password(password)

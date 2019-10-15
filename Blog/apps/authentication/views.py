@@ -52,6 +52,8 @@ class LoginAPIView(APIView):
 
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    """查询用户信息 修改用户信息"""
+
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
     serializer_class = UserSerializer
@@ -63,7 +65,9 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         serializer_data = {
-            'password': request.data.get('password', '')
+            'password': request.data.get('password', ''),
+            'username': request.data.get('username', ''),
+            'email': request.data.get('email', ''),
         }
 
         serializer = self.serializer_class(
