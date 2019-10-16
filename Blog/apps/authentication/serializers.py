@@ -104,7 +104,12 @@ class UserSerializer(serializers.ModelSerializer):
     email = serializers.CharField(allow_blank=True, required=True)
     profile = ProfileSerializer(write_only=True)
     bio = serializers.CharField(source='profile.bio', read_only=True)
-    image = serializers.CharField(source='profile.image', read_only=True)
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, data):
+        if data.profile.image:
+            return data.profile.image
+        return 'https://static.productionready.io/images/smiley-cyrus.jpg'
 
     class Meta:
         model = User
