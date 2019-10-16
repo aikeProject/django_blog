@@ -21,4 +21,5 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # 用户认证
     path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
+    path('api/', include('Blog.apps.profiles.urls', namespace='profiles')),
 ]
