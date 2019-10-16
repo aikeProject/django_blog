@@ -9,28 +9,18 @@
 @Time    :   2019-10-14 19:49
 @Desc    :   JSON 序列化
 """
-
-import json
-
-from rest_framework.renderers import JSONRenderer
+from Blog.apps.core.renderers import ConduitJSONRenderer
 
 
-class UserJSONRenderer(JSONRenderer):
+class UserJSONRenderer(ConduitJSONRenderer):
     charset = 'utf-8'
+    object_label = 'user'
 
     def render(self, data, media_type=None, renderer_context=None):
-        # 如果有错误，用默认的JSONRenderer处理
-        errors = data.get('errors', None)
-
         # token字节解码
         token = data.get('token', None)
-
-        if errors is not None:
-            return super(UserJSONRenderer, self).render(data)
 
         if token is not None and isinstance(token, bytes):
             data['token'] = token.decode('utf-8')
 
-        return json.dumps({
-            'user': data
-        })
+        return super(UserJSONRenderer, self).render(data)
