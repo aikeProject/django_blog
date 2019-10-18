@@ -22,4 +22,5 @@ urlpatterns = [
     # 用户认证
     path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
     path('api/', include('Blog.apps.profiles.urls', namespace='profiles')),
+    path('api/', include('Blog.apps.articles.urls', namespace='articles'))
 ]

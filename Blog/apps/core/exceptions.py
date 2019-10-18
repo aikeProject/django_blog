@@ -6,7 +6,8 @@ def core_exception_handler(exc, context):
 
     handlers = {
         'ValidationError': _handle_generic_error,
-        'NotAuthenticated': _handle_authentication_error
+        'NotAuthenticated': _handle_authentication_error,
+        'NotFound': _handle_not_found_error,
     }
 
     exception_class = exc.__class__.__name__
@@ -29,5 +30,23 @@ def _handle_authentication_error(exc, context, response):
     response.data = {
         'errors': '未登录'
     }
+
+    return response
+
+
+def _handle_not_found_error(exc, context, response):
+    view = context.get('view', None)
+
+    if view and hasattr(view, 'queryset') and view.queryset is not None:
+        error_key = view.queryset.model._meta.verbose_name
+
+        response.data = {
+            'errors': {
+                error_key: response.data['detail']
+            }
+        }
+
+    else:
+        response = _handle_generic_error(exc, context, response)
 
     return response
