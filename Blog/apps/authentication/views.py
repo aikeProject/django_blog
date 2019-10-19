@@ -11,7 +11,6 @@ from .serializers import (RegistrationSerializer, LoginSerializer, UserSerialize
 class RegistrationAPIView(APIView):
     # 允许所有人注册
     permission_classes = (AllowAny,)
-    renderer_classes = (UserJSONRenderer,)
     serializer_class = RegistrationSerializer
 
     def post(self, request):

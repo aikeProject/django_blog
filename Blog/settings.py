@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -130,9 +130,12 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:4000',
 )
 
-# rest_framework 配置
 AUTH_USER_MODEL = 'authentication.User'
 
+#  设置是否必须加尾部'/'
+APPEND_SLASH = False
+
+# rest_framework 配置
 REST_FRAMEWORK = {
     # 返回异常时执行的函数
     'EXCEPTION_HANDLER': 'Blog.apps.core.exceptions.core_exception_handler',
@@ -140,10 +143,25 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     # 用于认证的类
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'Blog.apps.authentication.backends.JWTAuthentication',
+        # 自定义jwt认证
+        # 'Blog.apps.authentication.backends.JWTAuthentication',
+
+        # 使用 django-rest-framework-jwt
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     # 'DEFAULT_RENDERER_CLASSES': (
     #     'rest_framework.renderers.BrowsableAPIRenderer',
     #     'rest_framework.renderers.JSONRenderer',
     # ),
+}
+
+# django-rest-framework-jwt 设置
+JWT_AUTH = {
+    # 请求头header需要携带 Authorization:Token (生成的jwt)进行认证
+    # 其中Token这个字样通过此配置设置
+    'JWT_AUTH_HEADER_PREFIX': 'Token',
+    # Token 过期时间
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
 }
