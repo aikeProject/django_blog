@@ -9,24 +9,37 @@
 @Time    :   2019-10-14 19:48
 @Desc    :
 """
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from Blog.apps.profiles.serializers import ProfileSerializer
-from .models import User
+
+# 拿到在 setting AUTH_USER_MODEL 配置中中指定的模型
+User = get_user_model()
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """注册序列化"""
 
     username = serializers.CharField(
+        label='用户名',
+        help_text='请填写用户名',
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="用户已经存在")],
         error_messages={
+            'blank': '请输入用户名',
             'required': '请输入用户名'
         }
     )
 
     email = serializers.CharField(
+        label='邮箱',
+        help_text='请填写邮箱',
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="邮箱已经存在")],
         error_messages={
+            'blank': '请输入邮箱',
             'required': '请输入邮箱'
         }
     )
@@ -36,22 +49,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         min_length=8,
         write_only=True,
         error_messages={
+            'blank': '请输入密码',
             'required': '请输入密码',
             'min_length': '密码必须大于8个字符'
         }
     )
 
-    # token只读，注册时候无token
-    token = serializers.CharField(max_length=255, read_only=True)
-
     class Meta:
         model = User
         # 需要序列化的字段
-        fields = ['email', 'username', 'password', 'token']
-
-    def create(self, validated_data):
-        """创建一个新用户"""
-        return User.objects.create_user(**validated_data)
+        fields = ['email', 'username', 'password']
 
 
 class LoginSerializer(serializers.Serializer):

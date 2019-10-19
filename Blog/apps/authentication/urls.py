@@ -20,7 +20,7 @@ app_name = 'users'
 
 urlpatterns = [
     # 注册
-    path('users', RegistrationAPIView.as_view(), name='register'),
-    path('users/login', LoginAPIView.as_view(), name='login'),
-    path('user', UserRetrieveUpdateAPIView.as_view(), name='update'),
+    path('register', RegistrationAPIView.as_view(), name='register'),
+    # path('users/login', LoginAPIView.as_view(), name='login'),
+    # path('user', UserRetrieveUpdateAPIView.as_view(), name='update'),
 ]

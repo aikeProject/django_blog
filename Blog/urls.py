@@ -18,12 +18,12 @@ from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     # web api 认证需要
-    path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # 用户认证
-    # path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
-    path('api', include('Blog.apps.profiles.urls', namespace='profiles')),
-    path('api', include('Blog.apps.articles.urls', namespace='articles')),
-    path('login', obtain_jwt_token)
+    path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
+    # path('api', include('Blog.apps.profiles.urls', namespace='profiles')),
+    path('api/', include('Blog.apps.articles.urls', namespace='articles')),
+    path('login/', obtain_jwt_token)
 ]

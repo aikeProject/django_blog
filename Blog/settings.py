@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django_extensions',
     # REST API
     'rest_framework',
-    'Blog.apps.articles',
-    'Blog.apps.authentication',
-    'Blog.apps.profiles',
+    'Blog.apps.authentication.apps.AuthenticationConfig',
+    'Blog.apps.articles.apps.ArticlesConfig',
+    'Blog.apps.profiles.apps.ProfilesConfig',
     'Blog.apps.core'
 ]
 
@@ -133,7 +133,7 @@ CORS_ORIGIN_WHITELIST = (
 AUTH_USER_MODEL = 'authentication.User'
 
 #  设置是否必须加尾部'/'
-APPEND_SLASH = False
+# APPEND_SLASH = False
 
 # rest_framework 配置
 REST_FRAMEWORK = {

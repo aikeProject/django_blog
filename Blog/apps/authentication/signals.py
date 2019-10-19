@@ -12,14 +12,21 @@
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 
 from Blog.apps.profiles.models import Profile
 
-from .models import User
+User = get_user_model()
 
 
 @receiver(post_save, sender=User)
-def create_related_profile(sender, instance, created, *args, **kwargs):
-    # 创建user的时候同时创建Profile
+def create_user(sender, instance=None, created=False, **kwargs):
+    """
+    User创建的时候，创建加密的密码，同时将Profile也创建好
+    """
     if instance and created:
+        password = instance.password
+        instance.set_password(password)
+        instance.save()
+
         instance.profile = Profile.objects.create(user=instance)
