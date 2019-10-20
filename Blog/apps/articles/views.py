@@ -9,6 +9,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .models import Article
 from .serializers import ArticleSerializer
+from .filters import ArticlesFilter
 
 
 class ArticleViewSet(CreateModelMixin,
@@ -24,6 +25,7 @@ class ArticleViewSet(CreateModelMixin,
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ArticleSerializer
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+    filter_class = ArticlesFilter
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

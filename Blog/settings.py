@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'corsheaders',
     # 扩展django命令
     'django_extensions',
+    'crispy_forms',
+    # 过滤
+    'django_filters',
     # REST API
     'rest_framework',
     'Blog.apps.authentication.apps.AuthenticationConfig',
@@ -147,7 +150,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 # django-rest-framework-jwt 设置
