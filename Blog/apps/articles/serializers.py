@@ -12,17 +12,16 @@
 
 from rest_framework import serializers
 
-from Blog.apps.profiles.serializers import ProfileSerializer
-
 from .models import Article
+from Blog.apps.authentication.serializers import UserDetailSerializer
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
-    description = serializers.CharField(required=False)
-    slug = serializers.SlugField(required=False)
-    createdAt = serializers.SerializerMethodField(method_name='get_created_at')
-    updatedAt = serializers.SerializerMethodField(method_name='get_updated_at')
+    author = UserDetailSerializer(read_only=True, help_text='作者')
+    description = serializers.CharField(required=False, help_text='描述')
+    slug = serializers.SlugField(read_only=True, help_text='')
+    createdAt = serializers.SerializerMethodField(method_name='get_created_at', help_text='创建时间')
+    updatedAt = serializers.SerializerMethodField(method_name='get_updated_at', help_text='更新时间')
 
     class Meta:
         model = Article
@@ -37,8 +36,8 @@ class ArticleSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        author = self.context.get('author', None)
-
+        request = self.context.get('request')
+        author = request.user
         return Article.objects.create(author=author, **validated_data)
 
     def get_created_at(self, instance):

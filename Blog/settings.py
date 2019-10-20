@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'Blog.apps.authentication.apps.AuthenticationConfig',
     'Blog.apps.articles.apps.ArticlesConfig',
-    'Blog.apps.profiles.apps.ProfilesConfig',
     'Blog.apps.core'
 ]
 
@@ -143,19 +142,12 @@ REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     # 用于认证的类
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 自定义jwt认证
-        # 'Blog.apps.authentication.backends.JWTAuthentication',
-
         # 使用 django-rest-framework-jwt
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema'
-    # 'DEFAULT_RENDERER_CLASSES': (
-    #     'rest_framework.renderers.BrowsableAPIRenderer',
-    #     'rest_framework.renderers.JSONRenderer',
-    # ),
 }
 
 # django-rest-framework-jwt 设置

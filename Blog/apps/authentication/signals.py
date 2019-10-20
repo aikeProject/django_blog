@@ -14,8 +14,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 
-from Blog.apps.profiles.models import Profile
-
 User = get_user_model()
 
 
@@ -28,5 +26,3 @@ def create_user(sender, instance=None, created=False, **kwargs):
         password = instance.password
         instance.set_password(password)
         instance.save()
-
-        instance.profile = Profile.objects.create(user=instance)

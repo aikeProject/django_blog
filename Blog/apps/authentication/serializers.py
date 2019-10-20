@@ -13,8 +13,6 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from Blog.apps.profiles.serializers import ProfileSerializer
-
 # 拿到在 setting AUTH_USER_MODEL 配置中中指定的模型
 User = get_user_model()
 

@@ -33,7 +33,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', include(router.urls)),
     # path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
-    # path('api', include('Blog.apps.profiles.urls', namespace='profiles')),
     # path('api/', include('Blog.apps.articles.urls', namespace='articles')),
     path('login/', obtain_jwt_token),
     path('docs/', include_docs_urls(title="blog")),
