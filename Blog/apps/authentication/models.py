@@ -51,6 +51,8 @@ class User(AbstractUser, TimestampedModel):
         },
     )
     email = models.EmailField(unique=True, blank=True)
+    bio = models.TextField(blank=True)
+    image = models.URLField(blank=True)
 
     # 使用email进行登录
     USERNAME_FIELD = 'email'

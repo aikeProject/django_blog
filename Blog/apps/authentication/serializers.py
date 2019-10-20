@@ -33,14 +33,15 @@ class UserSerializer(serializers.ModelSerializer):
         }
     )
 
-    email = serializers.CharField(
+    email = serializers.EmailField(
         label='邮箱',
         help_text='请填写邮箱',
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all(), message="邮箱已经存在")],
         error_messages={
             'blank': '请输入邮箱',
-            'required': '请输入邮箱'
+            'required': '请输入邮箱',
+            'invalid': '邮箱格式错误'
         }
     )
 
@@ -48,6 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=128,
         min_length=8,
         write_only=True,
+        help_text='请输入密码',
         error_messages={
             'blank': '请输入密码',
             'required': '请输入密码',
@@ -61,7 +63,45 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
 
+class ImageSerializerField(serializers.URLField):
+    def get_attribute(self, obj):
+        # We pass the object instance onto `to_representation`,
+        # not just the field attribute.
+        return obj
+
+    def to_representation(self, obj):
+        if obj.image:
+            return obj.image
+
+        return 'https://static.productionready.io/images/smiley-cyrus.jpg'
+
+    def to_internal_value(self, data):
+        return data
+
+
 class UserUpdateSerializer(serializers.ModelSerializer):
+    # allow_blank 将空值设置为有效值
+    username = serializers.CharField(
+        label='用户名',
+        help_text='请填写用户名',
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="用户已经存在")],
+        error_messages={
+            'blank': '请输入用户名',
+            'required': '请输入用户名'
+        }
+    )
+    email = serializers.EmailField(
+        label='邮箱',
+        help_text='请填写邮箱',
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="邮箱已经存在")],
+        error_messages={
+            'blank': '请输入邮箱',
+            'required': '请输入邮箱',
+            'invalid': '邮箱格式错误'
+        }
+    )
     password = serializers.CharField(
         max_length=128,
         min_length=8,
@@ -71,39 +111,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'required': '请输入密码'
         }
     )
-
-    # allow_blank 将空值设置为有效值
-    username = serializers.CharField(allow_blank=True, required=True)
-    email = serializers.CharField(allow_blank=True, required=True)
-    profile = ProfileSerializer(write_only=True)
-    bio = serializers.CharField(source='profile.bio', read_only=True)
-    image = serializers.SerializerMethodField()
-
-    def get_image(self, data):
-        if data.profile.image:
-            return data.profile.image
-        return 'https://static.productionready.io/images/smiley-cyrus.jpg'
+    bio = serializers.CharField(min_length=2, max_length=255)
+    image = ImageSerializerField(allow_blank=True)
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'profile', 'bio', 'image')
+        fields = ('email', 'username', 'password', 'bio', 'image')
 
-    def update(self, instance, validated_data):
 
-        password = validated_data.pop('password', None)
-        profile_data = validated_data.pop('profile', {})
-
-        for (key, value) in validated_data.items():
-            setattr(instance, key, value) if value else None
-
-        if password is not None:
-            instance.set_password(password)
-
-        instance.save()
-
-        for (key, value) in profile_data.items():
-            setattr(instance.profile, key, value) if value else None
-
-        instance.profile.save()
-
-        return instance
+class UserDetailSerializer(serializers.ModelSerializer):
+    """用户详情"""
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'bio', 'image')
