@@ -9,18 +9,3 @@
 @Time    :   2019-10-14 20:06
 @Desc    :   路由
 """
-
-from django.urls import path
-
-from .views import (
-    RegistrationAPIView, LoginAPIView, UserRetrieveUpdateAPIView
-)
-
-app_name = 'users'
-
-urlpatterns = [
-    # 注册
-    path('register', RegistrationAPIView.as_view(), name='register'),
-    # path('users/login', LoginAPIView.as_view(), name='login'),
-    # path('user', UserRetrieveUpdateAPIView.as_view(), name='update'),
-]

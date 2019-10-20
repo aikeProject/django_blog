@@ -19,7 +19,7 @@ from Blog.apps.profiles.serializers import ProfileSerializer
 User = get_user_model()
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """注册序列化"""
 
     username = serializers.CharField(
@@ -61,41 +61,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
 
-class LoginSerializer(serializers.Serializer):
-    """登录序列化"""
-
-    email = serializers.CharField(max_length=255)
-    username = serializers.CharField(max_length=255, read_only=True)
-    password = serializers.CharField(max_length=128, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
-
-    def validate(self, attrs):
-
-        email = attrs.get('email', '')
-        password = attrs.get('password', '')
-
-        if email is None:
-            raise serializers.ValidationError('请输入邮箱')
-
-        if password is None:
-            raise serializers.ValidationError('请输入密码')
-
-        user = authenticate(username=email, password=password)
-
-        if user is None:
-            raise serializers.ValidationError('用户名密码错误')
-
-        if not user.is_active:
-            raise serializers.ValidationError('此用户不存在')
-
-        return {
-            'username': user.username,
-            'email': user.email,
-            'token': user.token
-        }
-
-
-class UserSerializer(serializers.ModelSerializer):
+class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=128,
         min_length=8,
@@ -120,9 +86,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'token', 'profile', 'bio', 'image')
-
-        read_only_fields = ('token',)
+        fields = ('email', 'username', 'password', 'profile', 'bio', 'image')
 
     def update(self, instance, validated_data):
 

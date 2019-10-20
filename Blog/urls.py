@@ -15,15 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework.routers import DefaultRouter
+
+from Blog.apps.authentication.views import UserViewSet
+from Blog.apps.articles.views import ArticleViewSet
+
+router = DefaultRouter()
+
+router.register('user', UserViewSet, base_name='user')
+router.register('articles', ArticleViewSet, base_name='articles')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # web api 认证需要
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # 用户认证
-    path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
+    path('api/', include(router.urls)),
+    # path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
     # path('api', include('Blog.apps.profiles.urls', namespace='profiles')),
-    path('api/', include('Blog.apps.articles.urls', namespace='articles')),
-    path('login/', obtain_jwt_token)
+    # path('api/', include('Blog.apps.articles.urls', namespace='articles')),
+    path('login/', obtain_jwt_token),
+    path('docs/', include_docs_urls(title="blog")),
 ]
