@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'Blog.apps.authentication.apps.AuthenticationConfig',
     'Blog.apps.articles.apps.ArticlesConfig',
+    'Blog.apps.comment.apps.CommentConfig',
     'Blog.apps.core'
 ]
 
@@ -154,7 +155,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.SearchFilter',
         'django_filters.rest_framework.DjangoFilterBackend',
     )
 }

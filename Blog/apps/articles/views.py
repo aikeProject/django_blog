@@ -5,6 +5,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.settings import api_settings
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.filters import SearchFilter
 
 from .models import Article
 from .serializers import ArticleSerializer
@@ -19,10 +20,11 @@ class ArticleViewSet(CreateModelMixin,
     文章
     """
     lookup_field = 'slug'
-    queryset = Article.objects.all()
+    queryset = Article.objects.select_related('author')
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ArticleSerializer
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+    filter_backends = (SearchFilter,)
     search_fields = ('title',)
 
     def create(self, request, *args, **kwargs):

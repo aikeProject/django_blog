@@ -21,11 +21,14 @@ from rest_framework.routers import DefaultRouter
 
 from Blog.apps.authentication.views import UserViewSet
 from Blog.apps.articles.views import ArticleViewSet
+from Blog.apps.comment.views import CommentViewSet, CommentDelViewSet
 
 router = DefaultRouter()
 
 router.register('user', UserViewSet, base_name='user')
 router.register('articles', ArticleViewSet, base_name='articles')
+router.register('comments', CommentViewSet, base_name='comments')
+router.register('comments/del', CommentDelViewSet, base_name='commentsDel')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
