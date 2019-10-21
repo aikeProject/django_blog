@@ -9,9 +9,10 @@ from .models import Comment
 from ..articles.models import Article
 from .serializers import CommentSerializer
 from .filters import CommentFilter
+from ..core.permissions import IsOwnerOrReadOnly
 
 
-class CommentViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
+class CommentViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = 'article__slug'
     lookup_url_kwarg = 'article_slug'
     queryset = Comment.objects.select_related('article', 'author')
@@ -52,5 +53,5 @@ class CommentViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, Gener
 
 class CommentDelViewSet(DestroyModelMixin, GenericViewSet):
     queryset = Comment.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     serializer_class = CommentSerializer
