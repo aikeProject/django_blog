@@ -142,8 +142,6 @@ AUTH_USER_MODEL = 'authentication.User'
 REST_FRAMEWORK = {
     # 返回异常时执行的函数
     'EXCEPTION_HANDLER': 'Blog.apps.core.exceptions.core_exception_handler',
-    # 用于序列化程序错误的键
-    'NON_FIELD_ERRORS_KEY': 'error',
     # 用于认证的类
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 使用 django-rest-framework-jwt

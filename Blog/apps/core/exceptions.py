@@ -5,9 +5,8 @@ def core_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     handlers = {
-        'ValidationError': _handle_generic_error,
         'NotAuthenticated': _handle_authentication_error,
-        'NotFound': _handle_not_found_error,
+        'PermissionDenied': _handle_permission_error
     }
 
     exception_class = exc.__class__.__name__
@@ -18,35 +17,17 @@ def core_exception_handler(exc, context):
     return response
 
 
-def _handle_generic_error(exc, context, response):
-    response.data = {
-        'errors': response.data
-    }
-
-    return response
-
-
 def _handle_authentication_error(exc, context, response):
     response.data = {
-        'errors': '未登录'
+        'detail': '未登录，请登录'
     }
 
     return response
 
 
-def _handle_not_found_error(exc, context, response):
-    view = context.get('view', None)
-
-    if view and hasattr(view, 'queryset') and view.queryset is not None:
-        error_key = view.queryset.model._meta.verbose_name
-
-        response.data = {
-            'errors': {
-                error_key: response.data['detail']
-            }
-        }
-
-    else:
-        response = _handle_generic_error(exc, context, response)
+def _handle_permission_error(exc, context, response):
+    response.data = {
+        'detail': '无此权限'
+    }
 
     return response
