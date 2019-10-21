@@ -45,10 +45,10 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
 
     def get_permissions(self):
 
-        if self.action == 'create':
+        if self.action == 'create' or self.action == 'retrieve':
             return []
 
-        if self.action == 'update' or self.action == 'partial_update' or self.action == 'retrieve':
+        if self.action == 'update' or self.action == 'partial_update':
             return [IsAuthenticated()]
 
         return []
@@ -78,3 +78,12 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
     def get_object(self):
         """当前用户信息"""
         return self.request.user
+
+
+class ProfileViewSet(RetrieveModelMixin, GenericViewSet):
+    """
+    用户信息
+    """
+    lookup_field = 'username'
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer

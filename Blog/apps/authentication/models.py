@@ -53,6 +53,8 @@ class User(AbstractUser, TimestampedModel):
     email = models.EmailField(unique=True, blank=True)
     bio = models.TextField(blank=True)
     image = models.URLField(blank=True)
+    # symmetrical 取消对称关系
+    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
 
     # 使用email进行登录
     USERNAME_FIELD = 'email'
@@ -63,3 +65,19 @@ class User(AbstractUser, TimestampedModel):
 
     def __str__(self):
         return self.email
+
+    def follow(self, profile):
+        """关注"""
+        self.follows.add(profile)
+
+    def unfollow(self, profile):
+        """取消关注"""
+        self.follows.remove(profile)
+
+    def is_following(self, profile):
+        """你关注了谁"""
+        return self.follows.filter(pk=profile.pk).exists()
+
+    def is_followed_by(self, profile):
+        """谁关注了你"""
+        return self.followed_by.filter(pk=profile.pk).exists()

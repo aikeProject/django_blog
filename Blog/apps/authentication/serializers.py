@@ -119,6 +119,24 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class UserDetailSerializer(serializers.ModelSerializer):
     """用户详情"""
+
+    following = serializers.SerializerMethodField()
+
+    def get_following(self, instance):
+        request = self.context.get('request', None)
+
+        if request is None:
+            return False
+
+        follower = request.user
+
+        if not follower.is_authenticated:
+            return False
+
+        followee = instance
+
+        return follower.is_following(followee)
+
     class Meta:
         model = User
-        fields = ('email', 'username', 'bio', 'image')
+        fields = ('email', 'username', 'bio', 'image', 'following')
