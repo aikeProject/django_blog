@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.settings import api_settings
@@ -8,17 +8,16 @@ from rest_framework.response import Response
 from .models import Comment
 from ..articles.models import Article
 from .serializers import CommentSerializer
+from .filters import CommentFilter
 
 
-class CommentViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
+class CommentViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = 'article__slug'
     lookup_url_kwarg = 'article_slug'
-    queryset = Comment.objects.select_related(
-        'article', 'article__author',
-        'author'
-    )
+    queryset = Comment.objects.select_related('article', 'author')
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = CommentSerializer
+    filter_class = CommentFilter
 
     def create(self, request, *args, **kwargs):
         serializer_class = self.serializer_class
