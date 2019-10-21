@@ -120,6 +120,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     """用户详情"""
 
+    username = serializers.CharField(required=True)
     following = serializers.SerializerMethodField()
 
     def get_following(self, instance):
@@ -140,3 +141,4 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username', 'bio', 'image', 'following')
+        read_only_fields = ('email', 'bio', 'image', 'following',)

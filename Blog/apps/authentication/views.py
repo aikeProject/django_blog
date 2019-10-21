@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -80,10 +81,49 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
         return self.request.user
 
 
-class ProfileViewSet(RetrieveModelMixin, GenericViewSet):
+class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     """
     用户信息
+    create:
+        关注
+    destroy:
+        取消关注
     """
     lookup_field = 'username'
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        """新增关注"""
+        follower = self.request.user
+
+        try:
+            followee = User.objects.get(username=request.data.get('username'))
+        except User.DoesNotExist:
+            raise NotFound()
+
+        if follower.pk is followee.pk:
+            raise ValidationError('不能关注自己')
+
+        follower.follow(followee)
+
+        serializer = self.serializer_class(followee, data=request.data, context={
+            'request': request
+        })
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        """取消关注"""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        serializer = self.serializer_class(instance, context={
+            'request': request
+        })
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def perform_destroy(self, instance):
+        """取消关注"""
+        self.request.user.unfollow(instance)
