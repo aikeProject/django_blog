@@ -12,10 +12,11 @@
 
 from django.urls import path
 
-from .views import ArticlesFavoriteAPIView
+from .views import ArticlesFavoriteAPIView, TagListAPIView
 
 app_name = 'article'
 
 urlpatterns = [
     path('articles/<article_slug>/favorite', ArticlesFavoriteAPIView.as_view()),
+    path('tags', TagListAPIView.as_view()),
 ]

@@ -8,9 +8,10 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelM
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
+from rest_framework import generics
 
-from .models import Article
-from .serializers import ArticleSerializer
+from .models import Article, Tag
+from .serializers import ArticleSerializer, TagSerializer
 
 
 class ArticleViewSet(CreateModelMixin,
@@ -79,3 +80,17 @@ class ArticlesFavoriteAPIView(APIView):
         serializer = self.serializer_class(article, context=serializer_context)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TagListAPIView(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    pagination_class = None
+    serializer_class = TagSerializer
+
+    def list(self, request, *args, **kwargs):
+        serializer_data = self.get_queryset()
+        serializer = self.serializer_class(serializer_data, many=True)
+
+        return Response({
+            'tags': serializer.data
+        }, status=status.HTTP_200_OK)

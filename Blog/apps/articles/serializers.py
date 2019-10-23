@@ -12,8 +12,9 @@
 
 from rest_framework import serializers
 
-from .models import Article
+from .models import Article, Tag
 from Blog.apps.authentication.serializers import UserDetailSerializer
+from .relations import TagRelatedField
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -26,6 +27,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'
     )
+    tagList = TagRelatedField(many=True, required=False, source='tags')
 
     class Meta:
         model = Article
@@ -39,12 +41,21 @@ class ArticleSerializer(serializers.ModelSerializer):
             'updatedAt',
             'favorite',
             'favoritesCount',
+            'tagList',
         )
 
     def create(self, validated_data):
-        request = self.context.get('request')
+        request = self.context.get('request', None)
         author = request.user
-        return Article.objects.create(author=author, **validated_data)
+
+        tags = validated_data.pop('tags', [])
+
+        article = Article.objects.create(author=author, **validated_data)
+
+        for tag in tags:
+            article.tags.add(tag)
+
+        return article
 
     def get_created_at(self, instance):
         return instance.created_at.isoformat()
@@ -65,3 +76,12 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_favorites_count(self, instance):
         return instance.favorite_by.count()
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('tag',)
+
+    def to_representation(self, obj):
+        return obj.tag
