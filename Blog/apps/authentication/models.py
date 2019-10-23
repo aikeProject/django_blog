@@ -54,7 +54,10 @@ class User(AbstractUser, TimestampedModel):
     bio = models.TextField(blank=True)
     image = models.URLField(blank=True)
     # symmetrical 取消对称关系
+    # 关注
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
+    # 收藏
+    favorites = models.ManyToManyField('articles.Article', related_name='favorite_by')
 
     # 使用email进行登录
     USERNAME_FIELD = 'email'
@@ -81,3 +84,12 @@ class User(AbstractUser, TimestampedModel):
     def is_followed_by(self, profile):
         """谁关注了你"""
         return self.followed_by.filter(pk=profile.pk).exists()
+
+    def favorite(self, article):
+        self.favorites.add(article)
+
+    def un_favorite(self, article):
+        self.favorites.remove(article)
+
+    def has_favorite(self, article):
+        return self.favorites.filter(pk=article.pk).exists()

@@ -36,6 +36,7 @@ urlpatterns = [
     # web api 认证需要
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', include(router.urls)),
+    path('api/', include('Blog.apps.articles.urls', namespace='articles')),
     # path('api/', include('Blog.apps.authentication.urls', namespace='authentication')),
     # path('api/', include('Blog.apps.articles.urls', namespace='articles')),
     path('login/', obtain_jwt_token),

@@ -9,3 +9,13 @@
 @Time    :   2019-10-18 16:41
 @Desc    :
 """
+
+from django.urls import path
+
+from .views import ArticlesFavoriteAPIView
+
+app_name = 'article'
+
+urlpatterns = [
+    path('articles/<article_slug>/favorite', ArticlesFavoriteAPIView.as_view()),
+]

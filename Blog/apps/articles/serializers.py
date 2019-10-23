@@ -22,6 +22,10 @@ class ArticleSerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(read_only=True, help_text='')
     createdAt = serializers.SerializerMethodField(method_name='get_created_at', help_text='创建时间')
     updatedAt = serializers.SerializerMethodField(method_name='get_updated_at', help_text='更新时间')
+    favorite = serializers.SerializerMethodField()
+    favoritesCount = serializers.SerializerMethodField(
+        method_name='get_favorites_count'
+    )
 
     class Meta:
         model = Article
@@ -33,6 +37,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             'slug',
             'title',
             'updatedAt',
+            'favorite',
+            'favoritesCount',
         )
 
     def create(self, validated_data):
@@ -45,3 +51,17 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_updated_at(self, instance):
         return instance.updated_at.isoformat()
+
+    def get_favorite(self, instance):
+        request = self.context.get('request', None)
+
+        if request is None:
+            return False
+
+        if not request.user.is_authenticated:
+            return False
+
+        return request.user.has_favorite(instance)
+
+    def get_favorites_count(self, instance):
+        return instance.favorite_by.count()
