@@ -14,7 +14,6 @@ from rest_framework import serializers
 
 from .models import Article, Tag
 from Blog.apps.authentication.serializers import UserDetailSerializer
-from .relations import TagRelatedField
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -27,7 +26,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'
     )
-    tagList = TagRelatedField(many=True, required=False, source='tags')
 
     class Meta:
         model = Article
