@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     # 解决跨域问题
     'corsheaders',
     # 扩展django命令
-    'django_extensions',
+    # 'django_extensions',
     'crispy_forms',
     # 过滤
     'django_filters',

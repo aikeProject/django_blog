@@ -6,35 +6,43 @@ from Blog.apps.core.models import TimestampedModel
 
 
 class UserManager(BaseUserManager):
-    """
-    自定义User管理类
-    """
+    """重写用户管理类"""
 
-    def create_user(self, username, email, password=None):
-        """创建用户并返回"""
-        if username is None:
-            raise TypeError('用户名不能为空')
+    use_in_migrations = True
 
-        if email is None:
-            raise TypeError('邮箱不能为空')
+    def _create_user(self, username, email, password, **extra_fields):
 
-        user = self.model(username=username, email=self.normalize_email(email))
-        user.set_password(password)
-        user.save()
+        if not username:
+            raise ValueError('必须填写用户名')
 
+        if not email:
+            raise ValueError('必须填写邮箱')
+
+        email = self.normalize_email(email)
+        username = self.model.normalize_username(username)
+        user = self.model(username=username, email=email, password=password, **extra_fields)
+
+        # 信号里写过了
+        # user.set_password(password)
+
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
-        """创建管理员"""
-        if password is None:
-            raise TypeError('密码不能为空')
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(username, email, password, **extra_fields)
 
-        user = self.create_user(username, email, password)
-        user.is_superuser = True
-        user.is_staff = True
-        user.save()
+    def create_superuser(self, username, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
 
-        return user
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('管理员 is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('管理员 is_superuser=True.')
+
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractUser, TimestampedModel):

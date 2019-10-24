@@ -20,7 +20,7 @@ User = get_user_model()
 @receiver(post_save, sender=User)
 def create_user(sender, instance=None, created=False, **kwargs):
     """
-    User创建的时候，创建加密的密码，同时将Profile也创建好
+    User创建的时候，创建加密的密码
     """
     if instance and created:
         password = instance.password
