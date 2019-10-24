@@ -39,7 +39,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             'updatedAt',
             'favorite',
             'favoritesCount',
-            'tagList',
         )
 
     def create(self, validated_data):
