@@ -58,14 +58,15 @@ class User(AbstractUser, TimestampedModel):
             'blank': _('请输入用户名')
         },
     )
-    email = models.EmailField(unique=True, blank=True)
-    bio = models.TextField(blank=True)
-    image = models.URLField(blank=True)
+    email = models.EmailField(unique=True, blank=True, help_text='邮箱')
+    image = models.FileField(unique=False, null=True, blank=False, help_text='头像', upload_to="avatar")
     # symmetrical 取消对称关系
     # 关注
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
     # 收藏
     favorites = models.ManyToManyField('articles.Article', related_name='favorite_by')
+    # 博客
+    blog = models.OneToOneField(to='Blog', to_field='nid', null=True, on_delete=models.CASCADE)
 
     # 使用email进行登录
     USERNAME_FIELD = 'email'
@@ -101,3 +102,16 @@ class User(AbstractUser, TimestampedModel):
 
     def has_favorite(self, article):
         return self.favorites.filter(pk=article.pk).exists()
+
+
+class Blog(TimestampedModel):
+    """
+    博客信息
+    """
+    nid = models.AutoField(primary_key=True)
+    title = models.CharField(verbose_name='个人博客标题', max_length=64)
+    site_name = models.CharField(verbose_name='站点名称', max_length=64)
+    theme = models.CharField(verbose_name='博客主题', max_length=32)
+
+    def __str__(self):
+        return self.title

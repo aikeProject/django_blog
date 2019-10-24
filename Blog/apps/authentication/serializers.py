@@ -61,7 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
 
-class ImageSerializerField(serializers.URLField):
+class ImageSerializerField(serializers.FileField):
     def get_attribute(self, obj):
         # We pass the object instance onto `to_representation`,
         # not just the field attribute.
@@ -109,12 +109,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'required': '请输入密码'
         }
     )
-    bio = serializers.CharField(min_length=2, max_length=255)
-    image = ImageSerializerField(allow_blank=True)
+    image = ImageSerializerField()
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'bio', 'image')
+        fields = ('email', 'username', 'password', 'image')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -140,5 +139,5 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'bio', 'image', 'following')
-        read_only_fields = ('email', 'bio', 'image', 'following',)
+        fields = ('email', 'username', 'image', 'following')
+        read_only_fields = ('email', 'image', 'following',)
