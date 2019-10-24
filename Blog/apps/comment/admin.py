@@ -6,7 +6,7 @@ class CommentAdmin(admin.ModelAdmin):
     # 编辑的字段
     fields = ('body', 'article', 'author',)
     # 列表显示的字段
-    list_display = ('id', 'body', 'article', 'author',)
+    list_display = ('id', 'body', 'article', 'author', 'created_at', 'created_at')
 
 
 admin.site.register(Comment, CommentAdmin)
