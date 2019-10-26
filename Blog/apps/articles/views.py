@@ -9,13 +9,10 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from rest_framework import generics
-from django_filters.rest_framework import DjangoFilterBackend
 
+from Blog.apps.core.permissions import IsOwnerOrReadOnly
 from .models import Article, Tag
 from .serializers import ArticleSerializer, TagSerializer
-
-
-# from .filters import TagFilter
 
 
 class ArticleViewSet(CreateModelMixin,
@@ -86,14 +83,15 @@ class ArticlesFavoriteAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class TagListAPIView(generics.ListAPIView):
+class TagViewSet(ListModelMixin, viewsets.GenericViewSet):
     """
-    获取标签
+    获取标签（当前用户）
     """
     queryset = Tag.objects.all()
     pagination_class = None
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
     serializer_class = TagSerializer
-    filter_backends = (DjangoFilterBackend,)
-    # filter_class = TagFilter
-    filter_fields = ('blog',)
+
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset.filter(blog__user=user)
