@@ -12,12 +12,12 @@ class ArticleAdmin(admin.ModelAdmin):
 
 class TagAdmin(admin.ModelAdmin):
     fields = ('title', 'blog')
-    list_display = ('nid', 'title', 'blog', 'created_at', 'updated_at',)
+    list_display = ('title', 'blog', 'created_at', 'updated_at',)
 
 
 class CategoryAdmin(admin.ModelAdmin):
     fields = ('title', 'blog',)
-    list_display = ('nid', 'title', 'blog', 'created_at', 'updated_at',)
+    list_display = ('title', 'blog', 'created_at', 'updated_at',)
 
 
 admin.site.register(Article, ArticleAdmin)

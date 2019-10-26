@@ -141,3 +141,30 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'username', 'image', 'following')
         read_only_fields = ('email', 'image', 'following',)
+
+
+class UserFollowsSerializer(serializers.ModelSerializer):
+    """用户关注"""
+
+    id = serializers.CharField(required=True)
+    following = serializers.SerializerMethodField()
+
+    def get_following(self, instance):
+        request = self.context.get('request', None)
+
+        if request is None:
+            return False
+
+        follower = request.user
+
+        if not follower.is_authenticated:
+            return False
+
+        followee = instance
+
+        return follower.is_following(followee)
+
+    class Meta:
+        model = User
+        fields = ('id', 'following',)
+        read_only_fields = ('email', 'image', 'following', 'username')

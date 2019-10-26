@@ -16,19 +16,21 @@ class CommentViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     lookup_field = 'article__slug'
     lookup_url_kwarg = 'article_slug'
     queryset = Comment.objects.select_related('article', 'author')
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
     serializer_class = CommentSerializer
     filter_class = CommentFilter
 
     def create(self, request, *args, **kwargs):
         serializer_class = self.serializer_class
+        data = request.data
+        article_slug = data.get('article_slug')
 
         context = {
-            'author': self.request
+            'author': self.request.user
         }
 
         try:
-            context['article'] = Article.objects.get(slug=kwargs['data'].get('article_slug'))
+            context['article'] = Article.objects.get(slug=article_slug)
         except Article.DoesNotExist:
             raise NotFound('参数错误')
 

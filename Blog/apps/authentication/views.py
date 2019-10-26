@@ -11,7 +11,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
-from .serializers import (UserSerializer, UserUpdateSerializer, UserDetailSerializer)
+from .serializers import (UserSerializer, UserUpdateSerializer, UserDetailSerializer, UserFollowsSerializer)
 
 User = get_user_model()
 
@@ -89,9 +89,8 @@ class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMi
     destroy:
         取消关注
     """
-    lookup_field = 'username'
     queryset = User.objects.all()
-    serializer_class = UserDetailSerializer
+    serializer_class = UserFollowsSerializer
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
@@ -99,7 +98,7 @@ class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMi
         follower = self.request.user
 
         try:
-            followee = User.objects.get(username=request.data.get('username'))
+            followee = User.objects.get(pk=request.data.get('id'))
         except User.DoesNotExist:
             raise NotFound()
 

@@ -78,7 +78,4 @@ class ArticleSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('tag',)
-
-    def to_representation(self, obj):
-        return obj.tag
+        fields = ('title', 'blog')

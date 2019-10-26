@@ -6,7 +6,8 @@ def core_exception_handler(exc, context):
 
     handlers = {
         'NotAuthenticated': _handle_authentication_error,
-        'PermissionDenied': _handle_permission_error
+        'PermissionDenied': _handle_permission_error,
+        'ValidationError': _handle_validation_error
     }
 
     exception_class = exc.__class__.__name__
@@ -28,6 +29,14 @@ def _handle_authentication_error(exc, context, response):
 def _handle_permission_error(exc, context, response):
     response.data = {
         'detail': '无此权限'
+    }
+
+    return response
+
+
+def _handle_validation_error(exc, context, response):
+    response.data = {
+        'detail': response.data
     }
 
     return response
