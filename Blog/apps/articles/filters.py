@@ -10,7 +10,7 @@
 @Desc    :   过滤类
 """
 
-from .models import Article
+from .models import Article, Tag
 from django_filters import CharFilter, rest_framework
 
 
@@ -20,3 +20,9 @@ class ArticlesFilter(rest_framework.FilterSet):
     class Meta:
         model = Article
         fields = ('title',)
+
+
+class TagFilter(rest_framework.FilterSet):
+    class Meta:
+        model = Tag
+        fields = ('blog',)

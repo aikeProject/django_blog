@@ -37,16 +37,16 @@ class Category(TimestampedModel):
 
 
 class Tag(TimestampedModel):
-    title = models.CharField(verbose_name='标签名称', max_length=32)
-    blog = models.ForeignKey(verbose_name='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name='标签名称', help_text='标签名称', max_length=32)
+    blog = models.ForeignKey(verbose_name='所属博客', help_text='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
 
 
 class Article2Tag(TimestampedModel):
-    article = models.ForeignKey(verbose_name='文章', to="Article", on_delete=models.CASCADE)
-    tag = models.ForeignKey(verbose_name='标签', to="Tag", on_delete=models.CASCADE)
+    article = models.ForeignKey(verbose_name='文章', help_text='文章', to="Article", on_delete=models.CASCADE)
+    tag = models.ForeignKey(verbose_name='标签', help_text='标签', to="Tag", on_delete=models.CASCADE)
 
     class Meta:
         # 组合唯一约束
