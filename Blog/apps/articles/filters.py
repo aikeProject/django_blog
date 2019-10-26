@@ -22,7 +22,7 @@ class ArticlesFilter(rest_framework.FilterSet):
         fields = ('title',)
 
 
-class TagFilter(rest_framework.FilterSet):
-    class Meta:
-        model = Tag
-        fields = ('blog',)
+# class TagFilter(rest_framework.FilterSet):
+#     class Meta:
+#         model = Tag
+#         fields = ('blog',)

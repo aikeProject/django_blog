@@ -13,7 +13,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Article, Tag
 from .serializers import ArticleSerializer, TagSerializer
-from .filters import TagFilter
+
+
+# from .filters import TagFilter
 
 
 class ArticleViewSet(CreateModelMixin,
@@ -93,4 +95,5 @@ class TagListAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = TagSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_class = TagFilter
+    # filter_class = TagFilter
+    filter_fields = ('blog',)
