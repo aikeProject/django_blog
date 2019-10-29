@@ -157,6 +157,8 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
     # 返回异常时执行的函数
     'EXCEPTION_HANDLER': 'Blog.apps.core.exceptions.core_exception_handler',
+    # 如果验证错误没有指定一个特别的字段，将会使用‘non_field_errors’键,或者无论什么字符串都会被设置为NON_FIELD_ERRORS_KEY的值
+    'NON_FIELD_ERRORS_KEY': 'detail',
     # 用于认证的类
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 使用 django-rest-framework-jwt
