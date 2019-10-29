@@ -140,11 +140,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # 跨域列表
 CORS_ORIGIN_WHITELIST = (
-    '0.0.0.0:4000',
-    'localhost:4000',
+    '0.0.0.0:8080',
+    'localhost:8080',
 )
 
 AUTH_USER_MODEL = 'authentication.User'
+
+AUTHENTICATION_BACKENDS = (
+    'Blog.apps.core.auth.CustomBackend',
+)
 
 #  设置是否必须加尾部'/'
 # APPEND_SLASH = False

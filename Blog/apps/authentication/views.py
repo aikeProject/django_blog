@@ -46,10 +46,10 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
 
     def get_permissions(self):
 
-        if self.action == 'create' or self.action == 'retrieve':
+        if self.action == 'create':
             return []
 
-        if self.action == 'update' or self.action == 'partial_update':
+        if self.action == 'update' or self.action == 'partial_update' or self.action == 'retrieve':
             return [IsAuthenticated()]
 
         return []
