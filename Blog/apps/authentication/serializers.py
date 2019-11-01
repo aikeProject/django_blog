@@ -139,8 +139,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'blog', 'email', 'username', 'image', 'following')
-        read_only_fields = ('id', 'blog', 'email', 'image', 'following',)
+        fields = ('id', 'uid', 'blog', 'email', 'username', 'image', 'following')
+        read_only_fields = ('id', 'uid', 'email', 'image', 'following',)
 
 
 class UserFollowsSerializer(serializers.ModelSerializer):
