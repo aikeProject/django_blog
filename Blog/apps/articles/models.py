@@ -13,7 +13,7 @@ class Article(TimestampedModel):
     description = models.TextField(help_text='文章描述')
     body = models.TextField(help_text='文章内容')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles', help_text='文章作者')
-    category = models.ForeignKey(to='Category', null=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(to='Category', on_delete=models.CASCADE)
     tags = models.ManyToManyField(
         to="Tag",
         # through参数可以指定用作中介的中间模型
@@ -28,7 +28,6 @@ class Category(TimestampedModel):
     """
     博主个人文章分类表
     """
-    nid = models.AutoField(primary_key=True)
     title = models.CharField(verbose_name='分类标题', max_length=32)
     blog = models.ForeignKey(verbose_name='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
 

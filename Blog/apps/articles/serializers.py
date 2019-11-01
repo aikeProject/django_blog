@@ -13,7 +13,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import Article, Tag
+from .models import Article, Tag, Category
 
 User = get_user_model()
 
@@ -68,4 +68,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = '__all__'
