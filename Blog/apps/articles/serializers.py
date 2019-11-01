@@ -11,9 +11,17 @@
 """
 
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 from .models import Article, Tag
-from Blog.apps.authentication.serializers import UserDetailSerializer
+
+User = get_user_model()
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'uid', 'blog', 'email', 'username', 'image',)
 
 
 class ArticleSerializer(serializers.ModelSerializer):
