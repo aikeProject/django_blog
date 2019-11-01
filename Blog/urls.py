@@ -23,7 +23,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
 from Blog.apps.authentication.views import UserViewSet, ProfileFollowsViewSet, UserRetrieveViewSet
-from Blog.apps.articles.views import ArticleViewSet, TagViewSet
+from Blog.apps.articles.views import ArticleViewSet, TagViewSet, CategoryViewSet
 from Blog.apps.comment.views import CommentViewSet, CommentDelViewSet
 
 router = DefaultRouter()
@@ -35,6 +35,7 @@ router.register('articles', ArticleViewSet, base_name='articles')
 router.register('comments', CommentViewSet, base_name='comments')
 router.register('comments/del', CommentDelViewSet, base_name='commentsDel')
 router.register('tag', TagViewSet, base_name='tags')
+router.register('category', CategoryViewSet, base_name='category')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

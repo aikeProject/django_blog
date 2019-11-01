@@ -10,8 +10,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Article, Tag
-from .serializers import ArticleSerializer, TagSerializer
+from .models import Article, Tag, Category
+from .serializers import ArticleSerializer, TagSerializer, CategorySerializer
 from .filters import ArticlesFilter, TagFilter
 
 
@@ -95,3 +95,12 @@ class TagViewSet(ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TagSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_class = TagFilter
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    标签 增、删、改、查
+    """
+    queryset = Category.objects.all()
+    pagination_class = None
+    serializer_class = CategorySerializer
