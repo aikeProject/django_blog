@@ -169,9 +169,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'Blog.apps.core.pagination.BasePagination',
     'PAGE_SIZE': 10,
+    # 自定义认证
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-    )
+    ),
+    # 时间格式化
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
 }
 
 # django-rest-framework-jwt 设置

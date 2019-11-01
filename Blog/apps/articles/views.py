@@ -8,7 +8,6 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelM
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
-from rest_framework import generics
 
 from Blog.apps.core.permissions import IsOwnerOrReadOnly
 from .models import Article, Tag
