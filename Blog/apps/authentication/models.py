@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import (BaseUserManager, AbstractUser)
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -47,6 +49,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser, TimestampedModel):
     """用户"""
+    uid = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False, help_text='标识用户唯一字符串')
     username = models.CharField(
         _('username'),
         max_length=255,

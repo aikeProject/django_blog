@@ -12,7 +12,7 @@
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from django.utils.text import slugify
+from slugify import slugify
 
 from Blog.apps.core.utils import generate_random_string
 
@@ -24,7 +24,7 @@ def add_slug_to_article_if_not_exists(sender, instance, *args, **kwargs):
     MAXIMUM_SLUG_LENGTH = 255
 
     if instance and not instance.slug:
-        slug = slugify(instance.title, True)
+        slug = slugify(instance.title)
         unique = generate_random_string()
 
         if len(slug) > MAXIMUM_SLUG_LENGTH:

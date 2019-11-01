@@ -88,9 +88,5 @@ class TagViewSet(ListModelMixin, viewsets.GenericViewSet):
     """
     queryset = Tag.objects.all()
     pagination_class = None
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = TagSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return self.queryset.filter(blog__user=user)
