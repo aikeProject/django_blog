@@ -35,17 +35,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = (
-            'author',
-            'body',
-            'created_at',
-            'description',
-            'slug',
-            'title',
-            'updated_at',
-            'favorite',
-            'favoritesCount',
-        )
+        fields = '__all__'
 
     def create(self, validated_data):
         request = self.context.get('request', None)
