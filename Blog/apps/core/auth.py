@@ -22,9 +22,12 @@ class CustomBackend(ModelBackend):
     用户自定义用户验证
     """
 
-    def authenticate(self, request, email=None, password=None, **kwargs):
+    def authenticate(self, request, email=None, username=None, password=None, **kwargs):
+
+        data = email if email else username
+
         try:
-            user = User.objects.get(Q(username=email) | Q(email=email))
+            user = User.objects.get(Q(username=data) | Q(email=data))
             if user.check_password(password):
                 return user
         except Exception as e:
