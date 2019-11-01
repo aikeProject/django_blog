@@ -70,4 +70,4 @@ class ArticleSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('title', 'blog')
+        fields = '__all__'
