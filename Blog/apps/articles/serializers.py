@@ -30,6 +30,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'uid', 'blog', 'email', 'username', 'image',)
 
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     author = UserDetailSerializer(read_only=True, help_text='作者')
     description = serializers.CharField(required=False, help_text='描述')
@@ -39,6 +45,18 @@ class ArticleSerializer(serializers.ModelSerializer):
         method_name='get_favorites_count'
     )
     category = CategorySerializer(read_only=True)
+    tags = TagSerializer(read_only=True, many=True)
+
+    # tags = serializers.SerializerMethodField()
+
+    # def get_tags(self, obj):
+    #     temp = []
+    #     for tag in obj.tags.all():
+    #         temp.append({
+    #             'id': tag.id,
+    #             'title': tag.title
+    #         })
+    #     return temp
 
     class Meta:
         model = Article
@@ -70,9 +88,3 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_favorites_count(self, instance):
         return instance.favorite_by.count()
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
