@@ -11,15 +11,16 @@
 """
 
 from .models import Article, Tag
-from django_filters import rest_framework, UUIDFilter
+from django_filters import rest_framework, UUIDFilter, CharFilter
 
 
 class ArticlesFilter(rest_framework.FilterSet):
     uid = UUIDFilter(field_name="author__uid")
+    tagId = CharFilter(field_name='Article2Tag_tag')
 
     class Meta:
         model = Article
-        fields = ('uid',)
+        fields = ('uid', 'category', 'tagId')
 
 
 class TagFilter(rest_framework.FilterSet):

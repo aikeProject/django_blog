@@ -46,7 +46,7 @@ class Tag(TimestampedModel):
 
 class Article2Tag(TimestampedModel):
     article = models.ForeignKey(verbose_name='文章', help_text='文章', to="Article", on_delete=models.CASCADE)
-    tag = models.ForeignKey(verbose_name='标签', help_text='标签', to="Tag", on_delete=models.CASCADE)
+    tag = models.ForeignKey(verbose_name='标签', related_name='Article2Tag_tag', help_text='标签', to="Tag", on_delete=models.CASCADE)
 
     class Meta:
         # 组合唯一约束
