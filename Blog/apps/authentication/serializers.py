@@ -9,9 +9,11 @@
 @Time    :   2019-10-14 19:48
 @Desc    :
 """
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
+from .models import Blog
 
 # 拿到在 setting AUTH_USER_MODEL 配置中中指定的模型
 User = get_user_model()
@@ -116,11 +118,20 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ('email', 'username', 'password', 'image')
 
 
+class BlogSerializer(serializers.ModelSerializer):
+    # tags = TagSerializer(read_only=True)
+
+    class Meta:
+        model = Blog
+        fields = '__all__'
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
     """用户详情"""
 
     username = serializers.CharField(required=True)
     following = serializers.SerializerMethodField()
+    blog = BlogSerializer(read_only=True, help_text='用户的博客信息')
 
     def get_following(self, instance):
         request = self.context.get('request', None)
@@ -139,7 +150,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'uid', 'blog', 'email', 'username', 'image', 'following')
+        fields = ('id', 'uid', 'blog', 'email', 'username', 'image', 'following',)
         read_only_fields = ('id', 'uid', 'email', 'image', 'following',)
 
 

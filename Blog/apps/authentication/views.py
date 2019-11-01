@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -126,3 +126,13 @@ class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMi
     def perform_destroy(self, instance):
         """取消关注"""
         self.request.user.unfollow(instance)
+
+
+class UserRetrieveViewSet(RetrieveModelMixin, GenericViewSet):
+    """
+    查询用户信息
+    """
+    lookup_field = 'uid'
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)

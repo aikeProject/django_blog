@@ -38,7 +38,8 @@ class Category(TimestampedModel):
 
 class Tag(TimestampedModel):
     title = models.CharField(verbose_name='标签名称', help_text='标签名称', max_length=32)
-    blog = models.ForeignKey(verbose_name='所属博客', help_text='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
+    blog = models.ForeignKey(related_name='tag_blog', verbose_name='所属博客', help_text='所属博客', to='authentication.Blog',
+                             on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

@@ -69,7 +69,7 @@ class User(AbstractUser, TimestampedModel):
     # 收藏
     favorites = models.ManyToManyField('articles.Article', related_name='favorite_by')
     # 博客
-    blog = models.OneToOneField(to='Blog', null=True, on_delete=models.CASCADE)
+    blog = models.OneToOneField(to='Blog', null=True, on_delete=models.CASCADE, related_name='user_blog')
 
     # 使用email进行登录
     USERNAME_FIELD = 'email'
