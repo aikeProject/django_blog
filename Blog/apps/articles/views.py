@@ -10,8 +10,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Article, Tag, Category
-from .serializers import ArticleSerializer, TagSerializer, CategorySerializer
+from .models import Article, Tag, Category, WebCategory
+from .serializers import ArticleSerializer, TagSerializer, CategorySerializer, WebCategorySerializer
 from .filters import ArticlesFilter, TagFilter
 
 
@@ -104,3 +104,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     pagination_class = None
     serializer_class = CategorySerializer
+
+
+class WebCategoryViewSet(ListModelMixin, viewsets.GenericViewSet):
+    """
+    网站分类
+    """
+    queryset = WebCategory.objects.all()
+    pagination_class = None
+    serializer_class = WebCategorySerializer
+
+    def get_queryset(self):
+        # 没有父级的分类为顶级分类
+        queryset = self.queryset.filter(parent_category=None)
+        return queryset

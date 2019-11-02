@@ -13,7 +13,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import Article, Tag, Category
+from .models import Article, Tag, Category, WebCategory
 
 User = get_user_model()
 
@@ -88,3 +88,17 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_favorites_count(self, instance):
         return instance.favorite_by.count()
+
+
+class WebCategoryChildSerializer(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
+class WebCategorySerializer(serializers.ModelSerializer):
+    category_list = WebCategoryChildSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = WebCategory
+        fields = '__all__'

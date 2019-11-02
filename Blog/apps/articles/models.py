@@ -83,7 +83,8 @@ class WebCategory(TimestampedModel):
     网站分类
     """
     name = models.CharField(max_length=32, help_text='网站分类名称', verbose_name='网站分类名称')
-    parent_category = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    parent_category = models.ForeignKey('self', related_name='category_list', null=True, blank=True,
+                                        on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
