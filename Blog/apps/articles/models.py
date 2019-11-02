@@ -19,6 +19,8 @@ class Article(TimestampedModel):
         # through参数可以指定用作中介的中间模型
         through='Article2Tag',
     )
+    web_category = models.ForeignKey('WebCategory', null=True, blank=True, on_delete=models.CASCADE,
+                                     related_name='article_web_category')
 
     def __str__(self):
         return self.title
@@ -46,7 +48,8 @@ class Tag(TimestampedModel):
 
 class Article2Tag(TimestampedModel):
     article = models.ForeignKey(verbose_name='文章', help_text='文章', to="Article", on_delete=models.CASCADE)
-    tag = models.ForeignKey(verbose_name='标签', related_name='Article2Tag_tag', help_text='标签', to="Tag", on_delete=models.CASCADE)
+    tag = models.ForeignKey(verbose_name='标签', related_name='Article2Tag_tag', help_text='标签', to="Tag",
+                            on_delete=models.CASCADE)
 
     class Meta:
         # 组合唯一约束
@@ -73,3 +76,14 @@ class ArticleUpDown(TimestampedModel):
         unique_together = [
             ('article', 'user'),
         ]
+
+
+class WebCategory(TimestampedModel):
+    """
+    网站分类
+    """
+    name = models.CharField(max_length=32, help_text='网站分类名称', verbose_name='网站分类名称')
+    parent_category = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
