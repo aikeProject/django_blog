@@ -97,7 +97,7 @@ class WebCategoryChildSerializer(serializers.Serializer):
 
 
 class WebCategorySerializer(serializers.ModelSerializer):
-    category_list = WebCategoryChildSerializer(many=True, read_only=True)
+    child = WebCategoryChildSerializer(many=True, read_only=True, source='category_list')
 
     class Meta:
         model = WebCategory
