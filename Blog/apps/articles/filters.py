@@ -16,7 +16,7 @@ from django_filters import rest_framework, UUIDFilter, CharFilter
 
 class ArticlesFilter(rest_framework.FilterSet):
     uid = UUIDFilter(field_name="author__uid")
-    tagId = CharFilter(field_name='Article2Tag_tag')
+    tagId = CharFilter(field_name='article2tag__tag__id')
 
     class Meta:
         model = Article
