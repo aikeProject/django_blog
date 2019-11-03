@@ -37,15 +37,15 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = UserDetailSerializer(read_only=True, help_text='作者')
-    description = serializers.CharField(required=False, help_text='描述')
-    slug = serializers.SlugField(read_only=True, help_text='')
+    author = UserDetailSerializer(read_only=True, help_text='文章作者，必填')
+    description = serializers.CharField(required=True, help_text='文章描述，必填')
+    slug = serializers.SlugField(read_only=True, help_text='文章slug字符串，用于url')
+    category = CategorySerializer(required=True, help_text='文章个人分类,必填')
+    tags = TagSerializer(many=True, required=True, help_text='文章标签，必填')
     favorite = serializers.SerializerMethodField()
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'
     )
-    category = CategorySerializer(read_only=True)
-    tags = TagSerializer(read_only=True, many=True)
 
     # tags = serializers.SerializerMethodField()
 
