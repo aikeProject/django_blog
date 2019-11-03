@@ -13,6 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Article, Tag, Category, WebCategory
 from .serializers import ArticleSerializer, TagSerializer, CategorySerializer, WebCategorySerializer
 from .filters import ArticlesFilter, TagFilter
+from ..core.permissions import IsOwnerOrReadOnly
 
 
 class ArticleViewSet(CreateModelMixin,
@@ -50,7 +51,7 @@ class ArticleViewSet(CreateModelMixin,
 
 
 class ArticlesFavoriteAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
     serializer_class = ArticleSerializer
 
     def delete(self, request, article_slug=None):

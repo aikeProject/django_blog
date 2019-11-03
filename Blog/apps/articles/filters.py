@@ -20,7 +20,7 @@ class ArticlesFilter(rest_framework.FilterSet):
 
     class Meta:
         model = Article
-        fields = ('uid', 'category', 'tagId')
+        fields = ('uid', 'category', 'tagId', 'web_category')
 
 
 class TagFilter(rest_framework.FilterSet):
