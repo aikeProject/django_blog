@@ -11,12 +11,18 @@
 """
 
 from .models import Article, Tag
+from django.db.models import Q
 from django_filters import rest_framework, UUIDFilter, CharFilter
 
 
 class ArticlesFilter(rest_framework.FilterSet):
     uid = UUIDFilter(field_name="author__uid")
     tagId = CharFilter(field_name='article2tag__tag__id')
+    webCategoryId = CharFilter(method='category_filer')
+
+    # 网站分类的父级和子级均可过滤
+    def category_filer(self, queryset, name, value):
+        return queryset.filter(Q(web_category=value) | Q(web_category__parent_category=value))
 
     class Meta:
         model = Article
