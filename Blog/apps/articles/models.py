@@ -8,12 +8,35 @@ User = get_user_model()
 class Article(TimestampedModel):
     """文章"""
 
-    slug = models.SlugField(db_index=True, max_length=255, unique=True, help_text='唯一字符串', verbose_name='唯一字符串')
-    title = models.CharField(db_index=True, max_length=255, help_text='文章标题', verbose_name='文章标题')
-    description = models.TextField(verbose_name='文章描述', help_text='文章描述')
-    body = models.TextField(verbose_name='文章内容', help_text='文章内容')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles', help_text='文章作者')
-    category = models.ForeignKey(to='Category', on_delete=models.CASCADE, help_text='个人分类', verbose_name='个人分类')
+    slug = models.SlugField(
+        db_index=True,
+        max_length=255,
+        unique=True,
+        help_text='唯一字符串',
+        verbose_name='唯一字符串')
+    title = models.CharField(
+        db_index=True,
+        max_length=255,
+        help_text='文章标题',
+        verbose_name='文章标题')
+    description = models.TextField(
+        max_length=500,
+        verbose_name='文章描述',
+        help_text='文章描述')
+    body = models.TextField(
+        max_length=50000,
+        verbose_name='文章内容',
+        help_text='文章内容')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='articles',
+        help_text='文章作者')
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        help_text='个人分类',
+        verbose_name='个人分类')
     tags = models.ManyToManyField(
         to="Tag",
         # through参数可以指定用作中介的中间模型
@@ -21,8 +44,12 @@ class Article(TimestampedModel):
         help_text='文章标签',
         verbose_name='文章标签'
     )
-    web_category = models.ForeignKey('WebCategory', null=True, blank=True, on_delete=models.CASCADE,
-                                     related_name='article_web_category', help_text='网站分类', verbose_name='网站分类')
+    web_category = models.ForeignKey(
+        'WebCategory',
+        on_delete=models.CASCADE,
+        related_name='article_web_category',
+        help_text='网站分类',
+        verbose_name='网站分类')
 
     def __str__(self):
         return self.title
@@ -33,7 +60,8 @@ class Category(TimestampedModel):
     博主个人文章分类表
     """
     title = models.CharField(verbose_name='分类标题', max_length=32)
-    blog = models.ForeignKey(related_name='category_by',verbose_name='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
+    blog = models.ForeignKey(related_name='category_by', verbose_name='所属博客', to='authentication.Blog',
+                             on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

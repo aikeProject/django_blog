@@ -59,6 +59,11 @@ class ArticleEditSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('slug',)
 
+    def validate_tags(self, value):
+        if not value:
+            raise serializers.ValidationError('标签参数错误')
+        return value
+
     def create(self, validated_data):
         user = self.context.get('request').user
         tags = validated_data.pop('tags')
