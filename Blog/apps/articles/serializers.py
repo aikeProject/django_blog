@@ -36,6 +36,17 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArticleEditSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Article
+        fields = '__all__'
+        read_only_fields = ('slug',)
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     author = UserDetailSerializer(read_only=True, help_text='文章作者，必填')
     description = serializers.CharField(required=True, help_text='文章描述，必填')
@@ -61,19 +72,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
-
-    def create(self, validated_data):
-        request = self.context.get('request', None)
-        author = request.user
-
-        tags = validated_data.pop('tags', [])
-
-        article = Article.objects.create(author=author, **validated_data)
-
-        for tag in tags:
-            article.tags.add(tag)
-
-        return article
 
     def get_favorite(self, instance):
         request = self.context.get('request', None)

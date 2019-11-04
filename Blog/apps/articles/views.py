@@ -11,7 +11,8 @@ from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Article, Tag, Category, WebCategory
-from .serializers import ArticleSerializer, TagSerializer, CategorySerializer, WebCategorySerializer
+from .serializers import ArticleSerializer, TagSerializer, CategorySerializer, WebCategorySerializer, \
+    ArticleEditSerializer
 from .filters import ArticlesFilter, TagFilter
 from ..core.permissions import IsOwnerOrReadOnly
 
@@ -33,21 +34,22 @@ class ArticleViewSet(CreateModelMixin,
     search_fields = ('title',)
     filter_class = ArticlesFilter
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_serializer_class(self):
 
-    def perform_create(self, serializer):
-        serializer.save()
+        if self.action == 'create' or self.action == 'update' or self.action == 'partial_update':
+            return ArticleEditSerializer
 
-    def get_success_headers(self, data):
-        try:
-            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
-        except (TypeError, KeyError):
-            return {}
+        if self.action == 'retrieve':
+            return ArticleSerializer
+
+        return ArticleSerializer
+
+    def get_permissions(self):
+
+        if self.action == 'create' or self.action == 'update' or self.action == 'partial_update':
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+
+        return [IsAuthenticatedOrReadOnly()]
 
 
 class ArticlesFavoriteAPIView(APIView):
