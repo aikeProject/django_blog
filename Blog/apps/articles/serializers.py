@@ -32,6 +32,16 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     id = serializers.CharField(required=False)
+    title = serializers.CharField(
+        required=False,
+        min_length=2,
+        max_length=10,
+        error_messages={
+            'blank': '请输入标签名称',
+            'required': '请输入标签名称',
+            'min_length': '标签最小2个字符',
+            'max_length': '标签最大10个字符'
+        })
 
     class Meta:
         model = Tag
