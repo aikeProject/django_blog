@@ -13,7 +13,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import Article, Tag, Category, WebCategory
+from .models import Article, Tag, Category, WebCategory, Article2Tag
 
 User = get_user_model()
 
@@ -31,20 +31,39 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False)
+
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ('id', 'title')
 
 
 class ArticleEditSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+    tags = TagSerializer(many=True, required=True, help_text='文章标签，必填')
 
     class Meta:
         model = Article
         fields = '__all__'
         read_only_fields = ('slug',)
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        tags = validated_data.pop('tags')
+        article = Article.objects.create(**validated_data)
+        for (tag) in tags:
+            tag_id = tag.get('id')
+            # 选择已有的标签
+            if tag_id:
+                Article2Tag.objects.create(article=article, tag_id=tag.get('id'))
+            else:
+                # 创建标签
+                tag_title = tag.get('title')
+                tag_object = Tag.objects.create(title=tag_title, blog=user.blog)
+                Article2Tag.objects.create(article=article, tag=tag_object)
+        return article
 
 
 class ArticleSerializer(serializers.ModelSerializer):
