@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from Blog.apps.articles.models import Tag
+from Blog.apps.articles.models import Tag, Category
 from .models import Blog
 
 # 拿到在 setting AUTH_USER_MODEL 配置中中指定的模型
@@ -125,12 +125,20 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
 class BlogSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
+    categories = CategorySerializer(many=True, source='category_by')
 
     class Meta:
         model = Blog
         fields = '__all__'
+        depth = 1
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

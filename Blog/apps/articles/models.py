@@ -33,7 +33,7 @@ class Category(TimestampedModel):
     博主个人文章分类表
     """
     title = models.CharField(verbose_name='分类标题', max_length=32)
-    blog = models.ForeignKey(verbose_name='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
+    blog = models.ForeignKey(related_name='category_by',verbose_name='所属博客', to='authentication.Blog', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
