@@ -68,10 +68,7 @@ class ArticleEditSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     author = UserDetailSerializer(read_only=True, help_text='文章作者，必填')
-    description = serializers.CharField(required=True, help_text='文章描述，必填')
-    slug = serializers.SlugField(read_only=True, help_text='文章slug字符串，用于url')
-    category = CategorySerializer(required=True, help_text='文章个人分类,必填')
-    tags = TagSerializer(many=True, required=True, help_text='文章标签，必填')
+    tags = TagSerializer(many=True, help_text='文章标签，必填')
     favorite = serializers.SerializerMethodField()
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'
@@ -91,6 +88,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+        depth = 1
 
     def get_favorite(self, instance):
         request = self.context.get('request', None)
