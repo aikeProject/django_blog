@@ -82,8 +82,8 @@ class ArticleEditSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = UserDetailSerializer(read_only=True, help_text='文章作者，必填')
-    tags = TagSerializer(many=True, help_text='文章标签，必填')
+    author = UserDetailSerializer(read_only=True)
+    tags = TagSerializer(many=True)
     favorite = serializers.SerializerMethodField()
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'

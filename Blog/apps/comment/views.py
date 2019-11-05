@@ -7,26 +7,23 @@ from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from .models import Comment
 from ..articles.models import Article
-from .serializers import CommentSerializer
+from .serializers import CommentCreatSerializer, CommentsDetailSerializer
 from .filters import CommentFilter
 from ..core.permissions import IsOwnerOrReadOnly
 
 
-class CommentViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
-    lookup_field = 'article__slug'
-    lookup_url_kwarg = 'article_slug'
+class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
     queryset = Comment.objects.select_related('article', 'author')
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
-    serializer_class = CommentSerializer
+    serializer_class = CommentCreatSerializer
     filter_class = CommentFilter
 
     def create(self, request, *args, **kwargs):
         serializer_class = self.serializer_class
         data = request.data
-        article_slug = data.get('article_slug')
-
+        article_slug = data.get('article')
         context = {
-            'author': self.request.user
+            'request': request
         }
 
         try:
@@ -53,7 +50,7 @@ class CommentViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
             return {}
 
 
-class CommentDelViewSet(DestroyModelMixin, GenericViewSet):
+class CommentsViewSet(ListModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Comment.objects.all()
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
-    serializer_class = CommentSerializer
+    serializer_class = CommentsDetailSerializer

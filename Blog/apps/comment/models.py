@@ -12,6 +12,25 @@ class Comment(TimestampedModel):
     评论
     """
 
-    body = models.TextField(help_text='文章内容')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', help_text='评论人')
-    article = models.ForeignKey('articles.Article', on_delete=models.CASCADE, help_text='评论文章')
+    body = models.TextField(max_length=1000, help_text='评论内容', verbose_name='评论内容')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='评论人',
+        help_text='评论人')
+    article = models.ForeignKey(
+        'articles.Article',
+        related_name='comments_article',
+        on_delete=models.CASCADE,
+        help_text='评论文章',
+        verbose_name='评论文章')
+    parent = models.ForeignKey(
+        'self',
+        related_name='comment_parent',
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        verbose_name='父级评论',
+        help_text='父级评论'
+    )

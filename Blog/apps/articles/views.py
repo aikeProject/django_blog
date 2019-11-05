@@ -1,9 +1,8 @@
 from rest_framework import status, viewsets
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.settings import api_settings
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.filters import SearchFilter
