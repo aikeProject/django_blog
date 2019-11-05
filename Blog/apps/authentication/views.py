@@ -12,6 +12,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
 from .serializers import (UserSerializer, UserUpdateSerializer, UserDetailSerializer, UserFollowsSerializer)
+from ..core.permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -50,7 +51,7 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
             return []
 
         if self.action == 'update' or self.action == 'partial_update' or self.action == 'retrieve':
-            return [IsAuthenticated()]
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
 
         return []
 
@@ -91,7 +92,7 @@ class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMi
     """
     queryset = User.objects.all()
     serializer_class = UserFollowsSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def create(self, request, *args, **kwargs):
         """新增关注"""

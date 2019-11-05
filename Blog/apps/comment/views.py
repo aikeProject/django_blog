@@ -1,20 +1,24 @@
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, ListModelMixin
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from django.contrib.auth import get_user_model
 from .models import Comment
 from ..articles.models import Article
 from .serializers import CommentCreatSerializer, CommentsDetailSerializer
 from .filters import CommentFilter
 from ..core.permissions import IsOwnerOrReadOnly
 
+User = get_user_model()
+
 
 class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
     queryset = Comment.objects.select_related('article', 'author')
-    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     serializer_class = CommentCreatSerializer
     filter_class = CommentFilter
 
@@ -22,6 +26,7 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
         serializer_class = self.serializer_class
         data = request.data
         article_slug = data.get('article')
+        reply = data.get('reply', None)
         context = {
             'request': request
         }
@@ -29,7 +34,13 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
         try:
             context['article'] = Article.objects.get(slug=article_slug)
         except Article.DoesNotExist:
-            raise NotFound('参数错误')
+            raise NotFound('参数错误,该文章不存在')
+
+        if reply:
+            try:
+                context['reply'] = User.objects.get(uid=reply)
+            except User.DoesNotExist:
+                raise NotFound('参数错误,该用户不存在')
 
         serializer = serializer_class(data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
@@ -52,5 +63,15 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
 
 class CommentsViewSet(ListModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Comment.objects.all()
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = CommentsDetailSerializer
+
+    def get_permissions(self):
+        if self.action == 'destroy':
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+
+        return [IsAuthenticatedOrReadOnly()]
+
+    def get_queryset(self):
+        # 过滤出顶级评论
+        return self.queryset.filter(parent=None)
