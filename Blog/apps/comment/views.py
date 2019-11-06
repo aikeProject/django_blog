@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from django.contrib.auth import get_user_model
 from .models import Comment
 from ..articles.models import Article
@@ -20,7 +19,6 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
     queryset = Comment.objects.select_related('article', 'author')
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     serializer_class = CommentCreatSerializer
-    filter_class = CommentFilter
 
     def create(self, request, *args, **kwargs):
         serializer_class = self.serializer_class
@@ -65,6 +63,7 @@ class CommentsViewSet(ListModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Comment.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = CommentsDetailSerializer
+    filter_class = CommentFilter
 
     def get_permissions(self):
         if self.action == 'destroy':
