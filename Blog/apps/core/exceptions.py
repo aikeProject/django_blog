@@ -6,6 +6,7 @@ def core_exception_handler(exc, context):
 
     handlers = {
         'NotAuthenticated': _handle_authentication_error,
+        'AuthenticationFailed': _handle_authentication_error,
         'PermissionDenied': _handle_permission_error,
         'ValidationError': _handle_validation_error
     }
