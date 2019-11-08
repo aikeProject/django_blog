@@ -105,15 +105,7 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
         """
         是不是该文章的作者评论的
         """
-        user = self.context['request'].user
-
-        if not user:
-            return False
-
-        if not user.is_authenticated:
-            return False
-
-        return data.article.author == user
+        return data.article.author == data.author
 
 
 class CommentDestroySerializer(serializers.ModelSerializer):
