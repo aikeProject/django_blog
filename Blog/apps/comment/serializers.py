@@ -73,6 +73,7 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
     child = CommentsChildSerializer(many=True, read_only=True, source='comment_parent')
     old_time = serializers.SerializerMethodField()
     is_delete = serializers.SerializerMethodField()
+    is_own = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -99,6 +100,20 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
         :return: 刚刚，急几秒前，几分钟前，几小时前....
         """
         return timeago.format(data.updated_at, datetime.datetime.now(), 'zh_CN')
+
+    def get_is_own(self, data):
+        """
+        是不是该文章的作者评论的
+        """
+        user = self.context['request'].user
+
+        if not user:
+            return False
+
+        if not user.is_authenticated:
+            return False
+
+        return data.article.author == user
 
 
 class CommentDestroySerializer(serializers.ModelSerializer):
