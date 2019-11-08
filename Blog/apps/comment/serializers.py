@@ -46,11 +46,6 @@ class CommentCreatSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
-    reply = serializers.CharField(
-        write_only=True,
-        required=False,
-        help_text='回复评论人的uid'
-    )
 
     def create(self, validated_data):
         context = self.context
