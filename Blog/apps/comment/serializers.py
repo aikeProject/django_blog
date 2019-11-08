@@ -13,6 +13,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Comment
+import timeago, datetime
 
 User = get_user_model()
 
@@ -70,6 +71,7 @@ class CommentsChildSerializer(serializers.Serializer):
 class CommentsDetailSerializer(serializers.ModelSerializer):
     author = UserDetailSerializer(read_only=True)
     child = CommentsChildSerializer(many=True, read_only=True, source='comment_parent')
+    old_time = serializers.SerializerMethodField()
     is_own = serializers.SerializerMethodField()
 
     class Meta:
@@ -77,6 +79,9 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_is_own(self, data):
+        """
+        判断是否是可删除
+        """
         user = self.context['request'].user
 
         if not user:
@@ -86,6 +91,14 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
             return False
 
         return user == data.author
+
+    def get_old_time(self, data):
+        """
+        时间差
+        :param data: updated_at created_at
+        :return: 刚刚，急几秒前，几分钟前，几小时前....
+        """
+        return timeago.format(data.updated_at, datetime.datetime.now(), 'zh_CN')
 
 
 class CommentDestroySerializer(serializers.ModelSerializer):
