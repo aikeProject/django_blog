@@ -24,7 +24,6 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
         serializer_class = self.serializer_class
         data = request.data
         article_slug = data.get('article')
-        reply = data.get('reply', None)
         context = {
             'request': request
         }
@@ -33,12 +32,6 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
             context['article'] = Article.objects.get(slug=article_slug)
         except Article.DoesNotExist:
             raise NotFound('参数错误,该文章不存在')
-
-        if reply:
-            try:
-                context['reply'] = User.objects.get(uid=reply)
-            except User.DoesNotExist:
-                raise NotFound('参数错误,该用户不存在')
 
         serializer = serializer_class(data=request.data, context=context)
         serializer.is_valid(raise_exception=True)

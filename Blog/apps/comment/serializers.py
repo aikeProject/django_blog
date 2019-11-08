@@ -56,11 +56,6 @@ class CommentCreatSerializer(serializers.ModelSerializer):
         context = self.context
         validated_data.pop('article')
 
-        if context.get('reply'):
-            validated_data.pop('author')
-            validated_data.pop('reply')
-            validated_data['author'] = context.get('reply')
-
         return Comment.objects.create(
             article=context.get('article'),
             **validated_data
