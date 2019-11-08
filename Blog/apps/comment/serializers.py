@@ -72,13 +72,13 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
     author = UserDetailSerializer(read_only=True)
     child = CommentsChildSerializer(many=True, read_only=True, source='comment_parent')
     old_time = serializers.SerializerMethodField()
-    is_own = serializers.SerializerMethodField()
+    is_delete = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = '__all__'
 
-    def get_is_own(self, data):
+    def get_is_delete(self, data):
         """
         判断是否是可删除
         """
