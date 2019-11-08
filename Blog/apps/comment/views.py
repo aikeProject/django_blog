@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, ListModelMixin
@@ -8,7 +9,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import Comment
 from ..articles.models import Article
-from .serializers import CommentCreatSerializer, CommentsDetailSerializer
+from .serializers import CommentCreatSerializer, CommentsDetailSerializer, CommentDestroySerializer
 from .filters import CommentFilter
 from ..core.permissions import IsOwnerOrReadOnly
 
@@ -52,18 +53,30 @@ class CommentCreateViewSet(CreateModelMixin, GenericViewSet):
             return {}
 
 
-class CommentsViewSet(ListModelMixin, DestroyModelMixin, GenericViewSet):
+class CommentsViewSet(ListModelMixin, GenericViewSet):
     queryset = Comment.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = CommentsDetailSerializer
     filter_class = CommentFilter
 
-    def get_permissions(self):
-        if self.action == 'destroy':
-            return [IsAuthenticated(), IsOwnerOrReadOnly()]
-
-        return [IsAuthenticatedOrReadOnly()]
-
     def get_queryset(self):
         # 过滤出顶级评论
         return self.queryset.filter(parent=None)
+
+
+class CommentDelViewSet(DestroyModelMixin, GenericViewSet):
+    queryset = Comment.objects.all()
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    serializer_class = CommentDestroySerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        try:
+            instance.delete()
+        except ProtectedError:
+            instance.body = '<p style="text-decoration: line-through;color: #8a959a;">评论被删除了...</p>'
+            instance.save()

@@ -17,12 +17,6 @@ from .models import Comment
 User = get_user_model()
 
 
-class CommentChildSerializer(serializers.Serializer):
-    def to_representation(self, value):
-        serializer = self.parent.parent.__class__(value, context=self.context)
-        return serializer.data
-
-
 class CommentCreatSerializer(serializers.ModelSerializer):
     body = serializers.CharField(
         min_length=5,
@@ -92,3 +86,9 @@ class CommentsDetailSerializer(serializers.ModelSerializer):
             return False
 
         return user == data.author
+
+
+class CommentDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'

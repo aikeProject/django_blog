@@ -24,7 +24,7 @@ from rest_framework.routers import DefaultRouter
 
 from Blog.apps.authentication.views import UserViewSet, ProfileFollowsViewSet, UserRetrieveViewSet
 from Blog.apps.articles.views import ArticleViewSet, TagViewSet, CategoryViewSet, WebCategoryViewSet
-from Blog.apps.comment.views import CommentCreateViewSet, CommentsViewSet
+from Blog.apps.comment.views import CommentCreateViewSet, CommentsViewSet, CommentDelViewSet
 
 router = DefaultRouter()
 
@@ -32,8 +32,9 @@ router.register('user', UserViewSet, base_name='user')
 router.register('profilesFollow', ProfileFollowsViewSet, base_name='profilesFollow')
 router.register('userDetail', UserRetrieveViewSet, base_name='userDetail')
 router.register('articles', ArticleViewSet, base_name='articles')
-router.register('comment', CommentCreateViewSet, base_name='comments')
-router.register('comments', CommentsViewSet, base_name='commentsDel')
+router.register('comment', CommentCreateViewSet, base_name='comment')
+router.register('comments', CommentsViewSet, base_name='comments')
+router.register('comment/del', CommentDelViewSet, base_name='commentDel')
 router.register('tag', TagViewSet, base_name='tags')
 router.register('category', CategoryViewSet, base_name='category')
 router.register('webCategory', WebCategoryViewSet, base_name='web_category')
