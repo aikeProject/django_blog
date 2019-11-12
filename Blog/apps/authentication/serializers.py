@@ -64,59 +64,22 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
 
-class ImageSerializerField(serializers.FileField):
-    def get_attribute(self, obj):
-        # We pass the object instance onto `to_representation`,
-        # not just the field attribute.
-        return obj
-
-    def to_representation(self, obj):
-        if obj.image:
-            return obj.image
-
-        return 'https://static.productionready.io/images/smiley-cyrus.jpg'
-
-    def to_internal_value(self, data):
-        return data
-
-
 class UserUpdateSerializer(serializers.ModelSerializer):
     # allow_blank 将空值设置为有效值
     username = serializers.CharField(
         label='用户名',
         help_text='请填写用户名',
-        required=True,
+        required=False,
         validators=[UniqueValidator(queryset=User.objects.all(), message="用户已经存在")],
         error_messages={
             'blank': '请输入用户名',
             'required': '请输入用户名'
         }
     )
-    email = serializers.EmailField(
-        label='邮箱',
-        help_text='请填写邮箱',
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all(), message="邮箱已经存在")],
-        error_messages={
-            'blank': '请输入邮箱',
-            'required': '请输入邮箱',
-            'invalid': '邮箱格式错误'
-        }
-    )
-    password = serializers.CharField(
-        max_length=128,
-        min_length=8,
-        write_only=True,
-        allow_blank=True,
-        error_messages={
-            'required': '请输入密码'
-        }
-    )
-    image = ImageSerializerField()
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'image')
+        fields = ('username', 'image',)
 
 
 class TagSerializer(serializers.ModelSerializer):

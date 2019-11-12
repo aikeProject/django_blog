@@ -12,19 +12,17 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
 from .serializers import (UserSerializer, UserUpdateSerializer, UserDetailSerializer, UserFollowsSerializer)
-from ..core.permissions import IsOwnerOrReadOnly
+from ..core.permissions import IsOwnerOrReadOnlyUser
 
 User = get_user_model()
 
 
-class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
+class UserViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     """
     create:
         创建新用户
-    update:
-        更新用户信息
-    partial_update:
-        更新用户信息
+    reade:
+        查询登陆用户信息
     """
 
     # 允许所有人注册
@@ -37,9 +35,6 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
         if self.action == 'create':
             return UserSerializer
 
-        if self.action == 'update' or self.action == 'partial_update':
-            return UserUpdateSerializer
-
         if self.action == 'retrieve':
             return UserDetailSerializer
 
@@ -50,8 +45,8 @@ class UserViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, Generi
         if self.action == 'create':
             return []
 
-        if self.action == 'update' or self.action == 'partial_update' or self.action == 'retrieve':
-            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+        if self.action == 'retrieve':
+            return [IsAuthenticated(), IsOwnerOrReadOnlyUser()]
 
         return []
 
@@ -92,7 +87,7 @@ class ProfileFollowsViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMi
     """
     queryset = User.objects.all()
     serializer_class = UserFollowsSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyUser)
 
     def create(self, request, *args, **kwargs):
         """新增关注"""
@@ -137,3 +132,11 @@ class UserRetrieveViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+
+class UserUploadViewSet(UpdateModelMixin, GenericViewSet):
+    lookup_field = 'uid'
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyUser,)

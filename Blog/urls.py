@@ -22,13 +22,14 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
-from Blog.apps.authentication.views import UserViewSet, ProfileFollowsViewSet, UserRetrieveViewSet
+from Blog.apps.authentication.views import UserViewSet, ProfileFollowsViewSet, UserRetrieveViewSet, UserUploadViewSet
 from Blog.apps.articles.views import ArticleViewSet, TagViewSet, CategoryViewSet, WebCategoryViewSet
 from Blog.apps.comment.views import CommentCreateViewSet, CommentsViewSet, CommentDelViewSet
 
 router = DefaultRouter()
 
 router.register('user', UserViewSet, base_name='user')
+router.register('user/update', UserUploadViewSet, base_name='userUpdate')
 router.register('profilesFollow', ProfileFollowsViewSet, base_name='profilesFollow')
 router.register('userDetail', UserRetrieveViewSet, base_name='userDetail')
 router.register('articles', ArticleViewSet, base_name='articles')

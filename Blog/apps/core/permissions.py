@@ -23,3 +23,15 @@ class IsOwnerOrReadOnly(BasePermission):
             return True
 
         return obj.author == request.user
+
+
+class IsOwnerOrReadOnlyUser(BasePermission):
+    """
+    验证是不是当前用户
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+
+        return obj == request.user
