@@ -64,6 +64,32 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
 
+class UserBlogUpdateSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(
+        required=False,
+        min_length=2,
+        max_length=25,
+        error_messages={
+            'min_length': '个人博客标题不少于2个字',
+            'max_length': '个人博客标题不能超多25个人'
+        }
+    )
+
+    site_name = serializers.CharField(
+        required=False,
+        min_length=5,
+        max_length=50,
+        error_messages={
+            'min_length': '个人博客签名不少于5个字',
+            'max_length': '个人博客签名不能超多25个人'
+        }
+    )
+
+    class Meta:
+        model = Blog
+        fields = ('title', 'site_name',)
+
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     # allow_blank 将空值设置为有效值
     username = serializers.CharField(
@@ -77,9 +103,26 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         }
     )
 
+    blog = UserBlogUpdateSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ('username', 'image',)
+        fields = ('username', 'image', 'blog')
+
+    def update(self, instance, validated_data):
+        blog_data = validated_data.pop('blog', None)
+        blog = instance.blog
+
+        instance.username = validated_data.get('username', instance.username)
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+
+        if blog_data:
+            blog.title = blog_data.get('title', blog.title)
+            blog.site_name = blog_data.get('site_name', blog.site_name)
+            blog.save()
+
+        return instance
 
 
 class TagSerializer(serializers.ModelSerializer):
