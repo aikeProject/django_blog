@@ -16,7 +16,7 @@ itypes==1.1.0
 Jinja2==2.10.3
 Markdown==3.1.1
 MarkupSafe==1.1.1
-Pygments==2.4.2
+Pygments==2.7.4
 PyJWT==1.7.1
 python-slugify==4.0.0
 pytz==2019.3
